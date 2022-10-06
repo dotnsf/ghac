@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
-  description: Git Issues API ドキュメント
+  description: GHaC API ドキュメント
   version: 0.0.1
-  title: Git Issues REST APIs
+  title: GHaC REST APIs
 host: localhost:8080
 basePath: /api/github
 tags:

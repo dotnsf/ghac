@@ -112,23 +112,8 @@ app.get( '/callback', function( req, res ){
 });
 
 
-//. index page
-app.get( '/', function( req, res ){
-  var user = null;
-  if( req.session.oauth && req.session.oauth.id ){
-    user = {
-      token: req.session.oauth.token,
-      id: req.session.oauth.id,
-      name: req.session.oauth.name,
-      email: req.session.oauth.email,
-      avatar_url: req.session.oauth.avatar_url
-    };
-  }
-  res.render( 'index', { API_SERVER: API_SERVER, user: user } );
-});
-
 //. CMS page
-app.get( '/cms', function( req, res ){
+app.get( '/', function( req, res ){
   var GITHUB_REPO = 'GITHUB_REPO' in process.env ? process.env.GITHUB_REPO : '' 
   var user = null;
   if( req.session.oauth && req.session.oauth.id ){
