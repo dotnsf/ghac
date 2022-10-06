@@ -1,0 +1,179 @@
+swagger: '2.0'
+info:
+  description: Git Issues API ドキュメント
+  version: 0.0.1
+  title: Git Issues REST APIs
+host: localhost:8080
+basePath: /api/github
+tags:
+  - name: issues
+    description: GitHub Issues APIs
+  - name: comments
+    description: GitHub Comments APIs
+  - name: assignees
+    description: GitHub Assignees APIs
+  - name: labels
+    description: GitHub Labels APIs
+  - name: milestones
+    description: GitHub Milestones APIs
+schemes:
+  - http
+  - https
+paths:
+  /issues/{user}/{repo}:
+    get:
+      tags:
+        - issues
+      summary: Issues 取得
+      description: Issues 取得
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          type: string
+          in: path
+          description: GitHub ユーザー名
+          required: true
+        - name: repo
+          type: string
+          in: path
+          description: GitHub リポジトリ名
+          required: true
+        - name: token
+          type: string
+          in: query
+          description: GitHub アクセストークン
+        - name: filter
+          type: string
+          in: query
+          description: フィルタリング（Default:なし）
+        - name: state
+          type: string
+          in: query
+          description: 対象ステート（Default:'all'）
+        - name: labels
+          type: string
+          in: query
+          description: 対象ラベル（Default:なし）
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /comments/{user}/{repo}:
+    get:
+      tags:
+        - comments
+      summary: 特定 issue の Comments 取得
+      description: 特定 issue の Comments 取得
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          type: string
+          in: path
+          description: GitHub ユーザー名
+          required: true
+        - name: repo
+          type: string
+          in: path
+          description: GitHub リポジトリ名
+          required: true
+        - name: issue_num
+          type: number
+          in: query
+          description: GitHub Issue 番号
+          required: true
+        - name: token
+          type: string
+          in: query
+          description: GitHub アクセストークン
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /assignees/{user}/{repo}:
+    get:
+      tags:
+        - assignees
+      summary: Assignees 取得
+      description: Assignees 取得
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          type: string
+          in: path
+          description: GitHub ユーザー名
+          required: true
+        - name: repo
+          type: string
+          in: path
+          description: GitHub リポジトリ名
+          required: true
+        - name: token
+          type: string
+          in: query
+          description: GitHub アクセストークン
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /labels/{user}/{repo}:
+    get:
+      tags:
+        - labels
+      summary: Labels 取得
+      description: Labels 取得
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          type: string
+          in: path
+          description: GitHub ユーザー名
+          required: true
+        - name: repo
+          type: string
+          in: path
+          description: GitHub リポジトリ名
+          required: true
+        - name: token
+          type: string
+          in: query
+          description: GitHub アクセストークン
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /milestones/{user}/{repo}:
+    get:
+      tags:
+        - milestones
+      summary: Milestones 取得
+      description: Milestones 取得
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          type: string
+          in: path
+          description: GitHub ユーザー名
+          required: true
+        - name: repo
+          type: string
+          in: path
+          description: GitHub リポジトリ名
+          required: true
+        - name: token
+          type: string
+          in: query
+          description: GitHub アクセストークン
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
