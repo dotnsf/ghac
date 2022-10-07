@@ -1,5 +1,6 @@
 //. app.js
 var express = require( 'express' ),
+    cookieParser = require( 'cookie-parser' ),
     session = require( 'express-session' ),
     ejs = require( 'ejs' ),
     request = require( 'request' ),
@@ -8,10 +9,11 @@ var express = require( 'express' ),
 require( 'dotenv' ).config();
 
 app.use( session({
-  secret: 'github-issues-api',
+  secret: 'ghac',
   resave: false,
   saveUninitialized: false,
   cookie: {
+    //domain: "ghac.me",
     httpOnly: true,
     secure: false,
     maxage: 1000 * 60 * 10   //. 10min
@@ -24,8 +26,17 @@ var API_SERVER = 'API_SERVER' in process.env ? process.env.API_SERVER : ''
 var github = require( './api/github' );
 app.use( '/api/github', github );
 
+app.use( cookieParser() );
 app.use( express.Router() );
 app.use( express.static( __dirname + '/public' ) );
+
+app.use( function( req, res, next ){
+  res.header( 'Access-Control-Allow-Credentials', true );
+  res.header( 'Access-Control-Allow-Origin', '*' );
+  res.header( 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE' );
+  res.header( 'Access-Control-Allow-Headers', 'X-Requested-with, X-HTTP-Method-Override, Content-Type, Accept' );
+  next();
+});
 
 app.set( 'views', __dirname + '/views' );
 app.set( 'view engine', 'ejs' );
@@ -70,10 +81,16 @@ app.get( '/logout', function( req, res ){
   if( req.session.oauth ){
     req.session.oauth = {};
   }
-  //res.contentType( 'application/json; charset=utf-8' );
-  //res.write( JSON.stringify( { status: true }, null, 2 ) );
-  //res.end();
-  res.redirect( '/' );
+
+  //res.redirect( '/' );
+  //. #1  http://ghac.me/callback
+  var redirect_path = '/';
+  console.log( 3, req.session.ghac );
+  if( req.session.ghac && req.session.ghac.user && req.session.ghac.repo ){
+    redirect_path = '//' + req.session.ghac.user + '.' + req.get( 'host' ) + '/' + req.session.ghac.repo;
+  }
+
+  res.redirect( redirect_path );
 });
 
 app.get( '/callback', function( req, res ){
@@ -107,30 +124,69 @@ app.get( '/callback', function( req, res ){
         }
       }
     }
-    res.redirect( '/' );
+
+    //. #1  http://ghac.me/callback
+    var redirect_path = '/';
+    console.log( 2, req.cookies );
+
+    res.redirect( redirect_path );
   });
 });
 
 
 //. CMS page
-app.get( '/', function( req, res ){
-  var GITHUB_REPO = 'GITHUB_REPO' in process.env ? process.env.GITHUB_REPO : '' 
-  var user = null;
-  if( req.session.oauth && req.session.oauth.id ){
-    user = {
-      token: req.session.oauth.token,
-      id: req.session.oauth.id,
-      name: req.session.oauth.name,
-      email: req.session.oauth.email,
-      avatar_url: req.session.oauth.avatar_url
-    };
-  }
+app.get( '/*', function( req, res, next ){
+  //. #1
+  var host = req.get( 'host' );
+  var path = req.path;
 
-  var params = [];
-  Object.keys( req.query ).forEach( function( key ){
-    params.push( key + '=' + req.query[key] );
-  });
-  res.render( 'cms', { API_SERVER: API_SERVER, GITHUB_REPO: GITHUB_REPO, user: user, params: params.join( '&' ) } );
+  var tmp = path.split( '.' );
+  if( tmp.length > 1 ){
+  //. #1
+    next();
+  }else{
+    var github_user = '';
+    tmp = host.split( '.' );
+    if( tmp.length > 1 ){
+      github_user = tmp[0];
+      tmp.shift();
+      host = tmp.join( '.' );
+    }
+
+    var repo = '';
+    tmp = path.split( '/' );
+    if( tmp.length > 1 ){
+      repo = tmp[1];
+    }
+
+    var github_repo = '';
+    if( github_user && repo ){
+      //. この時の github_user と repo は（後でリダイレクトできるように）記録しておきたい
+      res.cookie( 'github_user', github_user, { domain: host } );
+      res.cookie( 'repo', repo, { domain: host } );
+
+      github_repo = github_user + '/' + repo;
+    }
+
+    var GITHUB_REPO = 'GITHUB_REPO' in process.env && process.env.GITHUB_REPO ? process.env.GITHUB_REPO : github_repo;
+    console.log( 'GITHUB_REPO = ' + GITHUB_REPO );
+    var user = null;
+    if( req.session.oauth && req.session.oauth.id ){
+      user = {
+        token: req.session.oauth.token,
+        id: req.session.oauth.id,
+        name: req.session.oauth.name,
+        email: req.session.oauth.email,
+        avatar_url: req.session.oauth.avatar_url
+      };
+    }
+
+    var params = [];
+    Object.keys( req.query ).forEach( function( key ){
+      params.push( key + '=' + req.query[key] );
+    });
+    res.render( 'cms', { API_SERVER: API_SERVER, GITHUB_REPO: GITHUB_REPO, user: user, params: params.join( '&' ) } );
+  }
 });
 
 //. listening port
