@@ -12,6 +12,7 @@
 <script src="//cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
 <link href="//use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet"/>
 <script src="//cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <link rel="stylesheet" href="./cms.css"/> 
 <script src="./cms.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -40,26 +41,33 @@ var params = '<%= params %>';
   </ul>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
+      <div>
 <% if( user ){ %>
-      <a class="btn btn-warning" href="#" onClick="myLogout();" title="<%= user.name %>"><img src="<%= user.avatar_url %>" width="30"/></a>
+        <a class="btn btn-warning" href="#" onClick="myLogout();" title="<%= user.name %>"><img src="<%= user.avatar_url %>" width="30"/></a>
 <% }else{ %>
-      <a class="btn btn-primary" href="#" onClick="myLogin();" title="ログイン">ログイン</a>
-    </li>
+        <a class="btn btn-primary" href="#" onClick="myLogin();" title="ログイン">ログイン</a>
 <% } %>
+        <a id="canvas_wrap" title="" href="#"><canvas id="mycanvas" width="30" height="30"></canvas></a>
+      </div>
+    </li>
   </ul>
 </nav>
 
 <div class="container" style="margin-top: 50px;">
+<% if( user ){ %>
   <div id="cms_head">
   </div>
   <div id="cms_main">
   </div>
   <div id="cms_foot">
   </div>
+<% }else{ %>
+  GitHub アカウントでログインしてください。
+<% } %>
 </div>
 
 <div class="container" style="margin-top: 50px;">
-  <div>
+  <div style="display: none;">
     <div>Remaining: <span id="ratelimit-remaining">?</span></div>
     <div>Reset: <span id="ratelimit-reset">?</span></div>
   </div>
