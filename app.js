@@ -127,7 +127,7 @@ app.get( '/callback', function( req, res ){
 
     //. #1  http://ghac.me/callback
     var redirect_path = '/';
-    console.log( 2, req.cookies );
+    console.log( 2, JSON.stringify( req.cookies ) );  //. {}
 
     res.redirect( redirect_path );
   });
