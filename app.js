@@ -162,8 +162,8 @@ app.get( '/*', function( req, res, next ){
     var github_repo = '';
     if( github_user && repo ){
       //. この時の github_user と repo は（後でリダイレクトできるように）記録しておきたい
-      res.cookie( 'github_user', github_user, { domain: host } );
-      res.cookie( 'repo', repo, { domain: host } );
+      res.cookie( 'github_user', github_user, { domain: '.' + host, path: '/' } );
+      res.cookie( 'repo', repo, { domain: '.' + host, path: '/' } );
 
       github_repo = github_user + '/' + repo;
     }
