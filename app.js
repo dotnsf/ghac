@@ -11,7 +11,7 @@ require( 'dotenv' ).config();
 app.use( session({
   secret: 'ghac',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, //false,
   cookie: {
     //domain: "ghac.me",
     httpOnly: true,
@@ -127,7 +127,7 @@ app.get( '/callback', function( req, res ){
 
     //. #1  http://ghac.me/callback
     var redirect_path = '/';
-    console.log( 2, JSON.stringify( req.cookies ) );  //. {}
+    console.log( 2, JSON.stringify( req.session.ghac ) );  //. {}
 
     res.redirect( redirect_path );
   });
@@ -162,8 +162,11 @@ app.get( '/*', function( req, res, next ){
     var github_repo = '';
     if( github_user && repo ){
       //. この時の github_user と repo は（後でリダイレクトできるように）記録しておきたい
-      res.cookie( 'github_user', github_user, { domain: '.' + host, path: '/' } );
-      res.cookie( 'repo', repo, { domain: '.' + host, path: '/' } );
+      //res.cookie( 'github_user', github_user, { domain: '.' + host, path: '/' } );
+      //res.cookie( 'repo', repo, { domain: '.' + host, path: '/' } );
+      req.session.ghac = {}; 
+      req.session.ghac.github_user = github_user; 
+      req.session.ghac.repo = repo; 
 
       github_repo = github_user + '/' + repo;
     }
