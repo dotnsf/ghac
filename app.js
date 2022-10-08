@@ -1,6 +1,7 @@
 //. app.js
 var express = require( 'express' ),
     cookieParser = require( 'cookie-parser' ),
+    fs = require( 'fs' ),
     http = require( 'http' ),
     https = require( 'https' ),
     session = require( 'express-session' ),
