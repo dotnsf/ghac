@@ -217,7 +217,7 @@ var http_server = http.createServer( app );
 var http_port = process.env.PORT || 8080;
 http_server.listen( http_port );
 
-if( options.ssl_key && options.ssl_cert && options.ssl_ca ){
+if( options.key && options.cert && options.ca ){
   var https_server = https.createServer( options, app );
   var https_port = process.env.SSL_PORT || 8443;
   https_server.listen( https_port );
