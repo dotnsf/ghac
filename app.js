@@ -20,9 +20,7 @@ app.use( session({
   }
 }));
 
-//. env values
-var API_SERVER = 'API_SERVER' in process.env ? process.env.API_SERVER : '' 
-
+//. GitHub APIs
 var github = require( './api/github' );
 app.use( '/api/github', github );
 
@@ -85,7 +83,6 @@ app.get( '/logout', function( req, res ){
   //res.redirect( '/' );
   //. #1  http://ghac.me/callback
   var redirect_path = '/';
-  console.log( 3, req.session.ghac );
   if( req.session.ghac && req.session.ghac.user && req.session.ghac.repo ){
     redirect_path = '//' + req.session.ghac.user + '.' + req.get( 'host' ) + '/' + req.session.ghac.repo;
   }
@@ -127,68 +124,76 @@ app.get( '/callback', function( req, res ){
 
     //. #1  http://ghac.me/callback
     var redirect_path = '/';
-    console.log( 2, JSON.stringify( req.session.ghac ) );  //. {}
+    if( req.session.ghac ){
+      redirect_path = req.session.ghac.github_user + '/' + req.session.ghac.repo; 
+    }
 
     res.redirect( redirect_path );
   });
 });
 
 
+//. Top Page
+app.get( '/', function( req, res ){
+  var github_repo = null;
+  if( req.session && req.session.ghac ){
+    var github_user = req.session.ghac.github_user; 
+    var repo = req.session.ghac.repo; 
+    github_repo = github_user + '/' + repo;
+  }
+
+  var GITHUB_REPO = 'GITHUB_REPO' in process.env && process.env.GITHUB_REPO ? process.env.GITHUB_REPO : github_repo;
+  console.log( 'GITHUB_REPO = ' + GITHUB_REPO );
+
+  if( GITHUB_REPO ){
+    res.redirect( '/' + GITHUB_REPO );
+  }else{
+    res.render( 'index', {} );
+  }
+});
+
 //. CMS page
+app.get( '/:user/:repo', function( req, res ){
+  var github_user = req.params.user;
+  var repo = req.params.repo;
+
+  req.session.ghac = {}; 
+  req.session.ghac.github_user = github_user; 
+  req.session.ghac.repo = repo; 
+
+  var github_repo = github_user + '/' + repo;
+
+  var GITHUB_REPO = 'GITHUB_REPO' in process.env && process.env.GITHUB_REPO ? process.env.GITHUB_REPO : github_repo;
+  console.log( 'GITHUB_REPO = ' + GITHUB_REPO );
+  var user = null;
+  if( req.session.oauth && req.session.oauth.id ){
+    user = {
+      token: req.session.oauth.token,
+      id: req.session.oauth.id,
+      name: req.session.oauth.name,
+      email: req.session.oauth.email,
+      avatar_url: req.session.oauth.avatar_url
+    };
+  }
+
+  var params = [];
+  Object.keys( req.query ).forEach( function( key ){
+    params.push( key + '=' + req.query[key] );
+  });
+  res.render( 'cms', { API_SERVER: "", GITHUB_REPO: GITHUB_REPO, user: user, params: params.join( '&' ) } );
+});
+
+//.  #6 - 404 Not Found
 app.get( '/*', function( req, res, next ){
-  //. #1
-  var host = req.get( 'host' );
   var path = req.path;
 
   var tmp = path.split( '.' );
   if( tmp.length > 1 ){
-  //. #1
     next();
   }else{
-    var github_user = '';
-    tmp = host.split( '.' );
-    if( tmp.length > 1 ){
-      github_user = tmp[0];
-      tmp.shift();
-      host = tmp.join( '.' );
-    }
-
-    var repo = '';
-    tmp = path.split( '/' );
-    if( tmp.length > 1 ){
-      repo = tmp[1];
-    }
-
-    var github_repo = '';
-    if( github_user && repo ){
-      //. この時の github_user と repo は（後でリダイレクトできるように）記録しておきたい
-      //res.cookie( 'github_user', github_user, { domain: '.' + host, path: '/' } );
-      //res.cookie( 'repo', repo, { domain: '.' + host, path: '/' } );
-      req.session.ghac = {}; 
-      req.session.ghac.github_user = github_user; 
-      req.session.ghac.repo = repo; 
-
-      github_repo = github_user + '/' + repo;
-    }
-
-    var GITHUB_REPO = 'GITHUB_REPO' in process.env && process.env.GITHUB_REPO ? process.env.GITHUB_REPO : github_repo;
-    console.log( 'GITHUB_REPO = ' + GITHUB_REPO );
-    var user = null;
-    if( req.session.oauth && req.session.oauth.id ){
-      user = {
-        token: req.session.oauth.token,
-        id: req.session.oauth.id,
-        name: req.session.oauth.name,
-        email: req.session.oauth.email,
-        avatar_url: req.session.oauth.avatar_url
-      };
-    }
-
-    var params = [];
-    Object.keys( req.query ).forEach( function( key ){
-      params.push( key + '=' + req.query[key] );
-    });
-    res.render( 'cms', { API_SERVER: API_SERVER, GITHUB_REPO: GITHUB_REPO, user: user, params: params.join( '&' ) } );
+    //. 404 Not Found
+    res.status( 404 );
+    res.render( '404', { path: path } );
   }
 });
 
