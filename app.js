@@ -1,6 +1,8 @@
 //. app.js
 var express = require( 'express' ),
     cookieParser = require( 'cookie-parser' ),
+    http = require( 'http' ),
+    https = require( 'https' ),
     session = require( 'express-session' ),
     ejs = require( 'ejs' ),
     request = require( 'request' ),
@@ -19,6 +21,18 @@ app.use( session({
     maxage: 1000 * 60 * 10   //. 10min
   }
 }));
+
+//. #3 SSL
+var options = {};
+if( 'SSL_KEY' in process.env && process.env.SSL_KEY ){
+  options.key = fs.readFileSync( process.env.SSL_KEY );
+}
+if( 'SSL_CERT' in process.env && process.env.SSL_CERT ){
+  options.cert = fs.readFileSync( process.env.SSL_CERT );
+}
+if( 'SSL_CA' in process.env && process.env.SSL_CA ){
+  options.ca = fs.readFileSync( process.env.SSL_CA );
+}
 
 //. GitHub APIs
 var github = require( './api/github' );
@@ -197,9 +211,18 @@ app.get( '/*', function( req, res, next ){
   }
 });
 
-//. listening port
-var port = process.env.PORT || 8080;
-app.listen( port );
-console.log( "server starting on " + port + " ..." );
+//. #3
+var http_server = http.createServer( app );
+var http_port = process.env.PORT || 8080;
+http_server.listen( http_port );
+
+if( options.ssl_key && options.ssl_cert && options.ssl_ca ){
+  var https_server = https.createServer( options, app );
+  var https_port = process.env.SSL_PORT || 8443;
+  https_server.listen( https_port );
+  console.log( "server starting on " + http_port + " / " + https_port + " ..." );
+}else{
+  console.log( "server starting on " + http_port + " ..." );
+}
 
 module.exports = app;

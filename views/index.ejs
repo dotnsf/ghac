@@ -22,6 +22,24 @@
 </nav>
 
 <div class="container" style="margin-top: 50px;">
+  <h2>GHaC (GitHub as CMS) の使い方</h2>
+  <p>
+  参照したい Issues のある GitHub リポジトリを指定して再度アクセスし、GitHub アカウントでログインしてください。
+  </p>
+  <p>
+  例えば参照したい GitHub リポジトリが <b>https://github.com/<font color="blue">dotnsf/mastermind</font></b> であった場合は <b>https://ghac.me/<font color="blue">dotnsf/mastermind</font></b> にアクセスしてください。
+  指定したリポジトリ内の GitHub Issues に登録されている Issues と、その Comments をウェブコンテンツとして一画面内に表示します。
+  </p>
+  <p>
+  対象リポジトリが公開リポジトリであれば、その Issues や Comments は（GitHub アカウントでログインすれば）誰でも参照できます。
+  一方、対象リポジトリが非公開リポジトリの場合は、ログインしたアカウントの権限によって参照できたり、できなかったりします。 
+  </p>
+  <p>
+  ログイン後、１時間ごとに利用権限が割り当てられます。具体的には１時間で GitHub API 5000 回を実行することができます。
+  １つのリポジトリ内に含まれる Issues や Comments の数はリポジトリによって異なるため、１つのリポジトリを参照する際に消費する API 回数はリポジトリによって異なります。
+  １時間経過するごとにこの回数はリセットされます。
+  リセットまでに残っている API 回数と、次のリセットのタイミングは画面右上のパイチャートの上にマウスを移動させると表示されます。
+  </p>
 </div>
 </body>
 </html>
