@@ -14,8 +14,7 @@ $( async function(){
         var foots = '';
         var pathname = location.pathname;
         //. 並びは番号順でいい？
-        for( var i = result0.issues.length - 1; i >= 0; i -- ){
-          console.log( result0.issues[i] );
+        for( var i = 0; i < result0.issues.length; i ++ ){
           var num = result0.issues[i].number;
           var comments = result0.issues[i].comments;
           var title = result0.issues[i].title;
