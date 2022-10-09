@@ -19,6 +19,7 @@ $( async function(){
           var num = result0.issues[i].number;
           var comments = result0.issues[i].comments;
           var title = result0.issues[i].title;
+          title = title.split( '<' ).join( '&lt;' ).split( '>' ).join( '&gt;' );  //. #10
           var state = result0.issues[i].state;
           var body = ( result0.issues[i].body ? marked.parse( result0.issues[i].body ) : '' );
           var created = getDateTime( result0.issues[i].created_at );
@@ -97,8 +98,9 @@ $( async function(){
             for( var j = 0; j < result1.comments.length; j ++ ){
               var created = getDateTime( result1.comments[j].created_at );
               var updated = getDateTime( result1.comments[j].updated_at );
+              var body = ( result1.comments[j].body ? marked.parse( result1.comments[j].body ) : '' );
               var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '"><pre>' 
-                + ( result1.comments[j].body ? marked.parse( result1.comments[j].body ) : '' )
+                + body
                 + '</pre>'
                 + '<div style="text-align: right; font-size: 10pt;">'
                 + '作成日: ' + created
