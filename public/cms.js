@@ -9,7 +9,7 @@ $( async function(){
 
       if( result0.issues.length > 0 ){
         var numbers = [];
-        var heads = '';
+        var heads = '<table class="table" id="issues_table"><thead><tr><th>#</th><th>title</th><th>state</th><th>#comments</th><th>updated</th></tr></thead><tbody>';
         var mains = '';
         var foots = '';
         var pathname = location.pathname;
@@ -55,7 +55,14 @@ $( async function(){
             milestone = result0.issues[i].milestone.title;
           }
   
-          var head = '&nbsp;<a href="#main_' + num + '">' + title + '(' + comments + ')' + '</a>'
+          //var head = '&nbsp;<a href="#main_' + num + '">' + title + '(' + comments + ')' + '</a>'
+          var anchor = '#main_' + num;
+          var head = '<tr><td><a href="' + anchor + '">' + num + '</a></td>'
+            + '<td><a href="' + anchor + '">' + title + '</a></td>'
+            + '<td><a href="' + anchor + '">' + state + '</a></td>'
+            + '<td><a href="' + anchor + '">' + comments + '</a></td>'
+            + '<td><a href="' + anchor + '">' + updated + '</a></td></tr>';
+
           var main = '<div style="margin-top: 50px;">'
             + '<a name="main_' + num + '"/>'
             + '<div id="card_' + num + '" class="card">'
@@ -85,8 +92,13 @@ $( async function(){
           }
         }
 
+        heads += '</tbody></table>';
         $('#cms_head').html( heads );
         $('#cms_main').html( mains );
+
+        $('#issues_table').DataTable({
+          order: [ [ 4, 'desc' ] ]
+        });
 
         for( var i = 0; i < numbers.length; i ++ ){
           var num = numbers[i];

@@ -229,7 +229,7 @@ api.get( '/issues/:user/:repo', async function( req, res ){
     var token = req.query.token;
 
     //. #2
-    var params_obj = { state: 'all', per_page: PER_PAGE };
+    var params_obj = { state: 'open', per_page: PER_PAGE };
     Object.keys( req.query ).forEach( function( key ){
       if( [ 'filter', 'state', 'labels' ].indexOf( key ) > -1 ){
         //. labels=AAA,BBB は AAA && BBB
