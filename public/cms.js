@@ -15,9 +15,11 @@ $( async function(){
         var pathname = location.pathname;
         //. 並びは番号順でいい？
         for( var i = result0.issues.length - 1; i >= 0; i -- ){
+          console.log( result0.issues[i] );
           var num = result0.issues[i].number;
           var comments = result0.issues[i].comments;
           var title = result0.issues[i].title;
+          var state = result0.issues[i].state;
           var body = ( result0.issues[i].body ? marked.parse( result0.issues[i].body ) : '' );
           var created = getDateTime( result0.issues[i].created_at );
           var updated = getDateTime( result0.issues[i].updated_at );
@@ -56,7 +58,7 @@ $( async function(){
           var main = '<div style="margin-top: 50px;">'
             + '<a name="main_' + num + '"/>'
             + '<div id="card_' + num + '" class="card">'
-            + '<div class="card-header">'
+            + '<div class="card-header card-header-' + state + '" title="' + state + '">'
             + title + labels
             + '</div>'
             + '<div class="card-body">'
