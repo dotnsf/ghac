@@ -13,7 +13,7 @@ var params = '<%= params %>';
 
 <body>
 
-<%- include('./navi', { GITHUB_REPO: '', login: true, user: user }) %>
+<%- include('./navi', { GITHUB_REPO: GITHUB_REPO, login: true, user: user }) %>
 
 <div class="container" style="margin-top: 50px;">
 <% if( user ){ %>
