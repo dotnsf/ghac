@@ -22,10 +22,14 @@ api.use( bodyParser.urlencoded( { extended: true } ) );
 api.use( bodyParser.json() );
 api.use( express.Router() );
 
+//. #15
+var api_server = 'API_SERVER' in process.env && process.env.API_SERVER ? process.env.API_SERVER : 'api.github.com';
+var api_server_base = 'https://' + api_server + '/repos/';
+
 //. Issues
 api.getIssues = async function( user, repo, params_obj, token ){
   return new Promise( async function( resolve, reject ){
-    var url = 'https://api.github.com/repos/' + user + '/' + repo + '/issues';
+    var url = api_server_base + user + '/' + repo + '/issues';
     if( params_obj && typeof params_obj == 'object' ){
       var params = [];
       Object.keys( params_obj ).forEach( function( key ){
@@ -68,8 +72,8 @@ api.getIssues = async function( user, repo, params_obj, token ){
 api.getComments = async function( user, repo, issue_num, params_obj, token ){
   return new Promise( async function( resolve, reject ){
     var url = issue_num ? 
-      'https://api.github.com/repos/' + user + '/' + repo + '/issues/' + issue_num + '/comments' :
-      'https://api.github.com/repos/' + user + '/' + repo + '/issues/comments';
+      api_server_base + user + '/' + repo + '/issues/' + issue_num + '/comments' :
+      api_server_base + user + '/' + repo + '/issues/comments';
 
     if( params_obj && typeof params_obj == 'object' ){
       var params = [];
@@ -108,7 +112,7 @@ api.getComments = async function( user, repo, issue_num, params_obj, token ){
 //. Assignees
 api.getAssignees = async function( user, repo, params_obj, token ){
   return new Promise( async function( resolve, reject ){
-    var url = 'https://api.github.com/repos/' + user + '/' + repo + '/assignees';
+    var url = api_server_base + user + '/' + repo + '/assignees';
     if( params_obj && typeof params_obj == 'object' ){
       var params = [];
       Object.keys( params_obj ).forEach( function( key ){
@@ -146,7 +150,7 @@ api.getAssignees = async function( user, repo, params_obj, token ){
 //. Labels
 api.getLabels = async function( user, repo, params_obj, token ){
   return new Promise( async function( resolve, reject ){
-    var url = 'https://api.github.com/repos/' + user + '/' + repo + '/labels';
+    var url = api_server_base + user + '/' + repo + '/labels';
     if( params_obj && typeof params_obj == 'object' ){
       var params = [];
       Object.keys( params_obj ).forEach( function( key ){
@@ -184,7 +188,7 @@ api.getLabels = async function( user, repo, params_obj, token ){
 //. Milestones
 api.getMilestones = async function( user, repo, params_obj, token ){
   return new Promise( async function( resolve, reject ){
-    var url = 'https://api.github.com/repos/' + user + '/' + repo + '/milestones';
+    var url = api_server_base + user + '/' + repo + '/milestones';
     if( params_obj && typeof params_obj == 'object' ){
       var params = [];
       Object.keys( params_obj ).forEach( function( key ){
