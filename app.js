@@ -94,15 +94,12 @@ app.get( '/logout', function( req, res ){
   if( req.session.oauth ){
     req.session.oauth = {};
   }
-
-  //res.redirect( '/' );
-  //. #1  http://ghac.me/callback
-  var redirect_path = '/';
-  if( req.session.ghac && req.session.ghac.user && req.session.ghac.repo ){
-    redirect_path = '//' + req.session.ghac.user + '.' + req.get( 'host' ) + '/' + req.session.ghac.repo;
+  if( req.session.ghac ){
+    req.session.ghac = null;
   }
 
-  res.redirect( redirect_path );
+  //. #13  http://ghac.me/
+  res.redirect( '/' );
 });
 
 app.get( '/callback', function( req, res ){

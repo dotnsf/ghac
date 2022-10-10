@@ -89,6 +89,10 @@ $( async function(){
           if( comments > 0 ){
             numbers.push( num );
           }
+
+          if( i == result0.issues.length -1 && numbers.length == 0 ){
+            showRateLimitReset( result0 );
+          }
         }
 
         heads += '</tbody></table>';
