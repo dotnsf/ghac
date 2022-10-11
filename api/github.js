@@ -250,7 +250,14 @@ api.get( '/issues/:user/:repo', async function( req, res ){
       params_obj['page'] = page;
       result = await api.getIssues( user, repo, params_obj, token );
       if( result.status && result.issues && result.issues.length > 0 ){
-        issues = issues.concat( result.issues );
+        //issues = issues.concat( result.issues );
+        //. #16
+        result.issues.forEach( function( issue ){
+          issue.body = issue.body.split( '```mermaid' ).join( '<div class="mermaid">' );
+          issue.body = issue.body.split( '```' ).join( '</div>' );
+
+          issues.push( issue );
+        });
       }
 
       if( !result.status || !result.issues || result.issues.length < PER_PAGE ){
@@ -305,7 +312,14 @@ api.get( '/comments/:user/:repo', async function( req, res ){
       params_obj['page'] = page;
       result = await api.getComments( user, repo, issue_num, params_obj, token );
       if( result.status && result.comments && result.comments.length > 0 ){
-        comments = comments.concat( result.comments );
+        //comments = comments.concat( result.comments );
+        //. #16
+        result.comments.forEach( function( comment ){
+          comment.body = comment.body.split( '```mermaid' ).join( '<div class="mermaid">' );
+          comment.body = comment.body.split( '```' ).join( '</div>' );
+
+          comments.push( comment );
+        });
       }
 
       if( !result.comments || result.comments.length < PER_PAGE ){

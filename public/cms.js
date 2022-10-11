@@ -114,6 +114,7 @@ $( async function(){
               var created = getDateTime( result1.comments[j].created_at );
               var updated = getDateTime( result1.comments[j].updated_at );
               var body = ( result1.comments[j].body ? marked.parse( result1.comments[j].body ) : '' );
+              //body = body.split( '--&gt;' ).join( '-->' );
               var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '"><pre>' 
                 + body
                 + '</pre>'
@@ -126,6 +127,14 @@ $( async function(){
             }
           }
         }
+
+        //. #16
+        console.log( "mermaid" );
+        mermaid.initialize({
+          logLevel: 1,
+          flowChart: { htmlLabels: false },
+          startOnLoad: false
+        });
       }
     }else{
       if( result0 && result0.error && result0.error.message ){
