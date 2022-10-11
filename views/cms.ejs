@@ -1,5 +1,23 @@
 <%- include('./head', {}) %>
 
+<!-- #34 -->
+<script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text-x-mathjax-config">
+MathJax.Hub.Config({
+  //skipStartupTypeset: true,
+  extensions: [ "text2jax.js" ],
+  jax: [ "input/TeX", "output/HTML-CSS" ],
+  text2jax: {
+    inlineMath: [ [ '$', '$' ], [ "\\(", "\\)" ] ],
+    displayMath: [ [ '$$', '$$' ], [ "\\[", "\\]" ] ],
+    processEscapes: true
+  },
+  "HTML-CSS": {
+    availableFonts: [ "TeX" ]
+  }
+});
+</script>
+
 <script src="/cms.js"></script>
 <link href="/cms.css" rel="stylesheet"/>
 <script>

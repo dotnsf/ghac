@@ -1,4 +1,9 @@
 //. cms.js
+mermaid.initialize({
+  //logLevel: 1,
+  startOnLoad: false
+});
+
 $( async function(){
   if( TOKEN ){
     var result0 = await getIssues( params );
@@ -21,6 +26,7 @@ $( async function(){
           title = title.split( '<' ).join( '&lt;' ).split( '>' ).join( '&gt;' );  //. #10
           var state = result0.issues[i].state;
           var body = ( result0.issues[i].body ? marked.parse( result0.issues[i].body ) : '' );
+          body = body.split( '\n' ).join( '' );
           var created = getDateTime( result0.issues[i].created_at );
           var updated = getDateTime( result0.issues[i].updated_at );
 
@@ -114,7 +120,7 @@ $( async function(){
               var created = getDateTime( result1.comments[j].created_at );
               var updated = getDateTime( result1.comments[j].updated_at );
               var body = ( result1.comments[j].body ? marked.parse( result1.comments[j].body ) : '' );
-              //body = body.split( '--&gt;' ).join( '-->' );
+              body = body.split( '\n' ).join( '' );
               var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '"><pre>' 
                 + body
                 + '</pre>'
@@ -129,12 +135,7 @@ $( async function(){
         }
 
         //. #16
-        console.log( "mermaid" );
-        mermaid.initialize({
-          logLevel: 1,
-          flowChart: { htmlLabels: false },
-          startOnLoad: false
-        });
+        mermaid.init();
       }
     }else{
       if( result0 && result0.error && result0.error.message ){
