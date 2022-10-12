@@ -27,7 +27,6 @@ $( async function(){
           var state = result0.issues[i].state;
           var body = ( result0.issues[i].body ? marked.parse( result0.issues[i].body ) : '' );
           body = body.split( '</p>\n<p>' ).join( '\n' );
-          console.log( { body } );
           var created = getDateTime( result0.issues[i].created_at );
           var updated = getDateTime( result0.issues[i].updated_at );
 
