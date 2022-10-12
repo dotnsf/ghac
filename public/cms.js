@@ -26,7 +26,8 @@ $( async function(){
           title = title.split( '<' ).join( '&lt;' ).split( '>' ).join( '&gt;' );  //. #10
           var state = result0.issues[i].state;
           var body = ( result0.issues[i].body ? marked.parse( result0.issues[i].body ) : '' );
-          body = body.split( '\n' ).join( '' );
+          body = body.split( '</p>\n<p>' ).join( '\n' );
+          console.log( { body } );
           var created = getDateTime( result0.issues[i].created_at );
           var updated = getDateTime( result0.issues[i].updated_at );
 
@@ -77,7 +78,8 @@ $( async function(){
             + '<div class="card-body">'
             + '<h6 class="card-subtitle' + ( assignee ? '' : ' mb-2 text-muted' ) + '">担当者: ' + ( assignee ? assignee : "（未アサイン）" ) + '</h6>'
             + '<h6 class="card-subtitle' + ( milestone ? '' : ' mb-2 text-muted' ) + '">対応目途: ' + ( milestone ? milestone : "（未定）" ) + '</h6>'
-            + ( body ? '<p class="card-text"><pre>' + body + '</pre></p>' : '' )
+            //+ ( body ? '<p class="card-text"><pre>' + body + '</pre></p>' : '' )
+            + ( body ? '<p class="card-text" id="card-text-' + i + '">' + body + '</p>' : '' )
             + '<div style="text-align: right; font-size: 10pt;">'
             + '作成日: ' + created
             + ( created != updated ? '<br/>更新日: ' + updated : '' )
@@ -109,6 +111,15 @@ $( async function(){
           order: [ [ 4, 'desc' ] ]
         });
 
+        //. #17
+        for( var i = 0; i < result0.issues.length; i ++ ){
+          console.log( 'i=' + i, $('#card-text-'+i).val() );
+          MathJax.Hub.Typeset(
+            $('#card-text-'+i)[0],
+            function(){}
+          );
+        }
+
         for( var i = 0; i < numbers.length; i ++ ){
           var num = numbers[i];
           var result1 = await getComments( num );
@@ -120,16 +131,24 @@ $( async function(){
               var created = getDateTime( result1.comments[j].created_at );
               var updated = getDateTime( result1.comments[j].updated_at );
               var body = ( result1.comments[j].body ? marked.parse( result1.comments[j].body ) : '' );
-              body = body.split( '\n' ).join( '' );
-              var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '"><pre>' 
+              //var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '"><pre>' 
+              var li1 = '<li class="list-group-item" id="li1_' + num + '_' + j + '">' 
                 + body
-                + '</pre>'
+              //  + '</pre>'
                 + '<div style="text-align: right; font-size: 10pt;">'
                 + '作成日: ' + created
                 + ( created != updated ? '<br/>更新日: ' + updated : '' )
                 + '</div>'
                 + '</li>';
               $('#ul_' + num).append( li1 );
+
+              //. #17
+              /*
+              MathJax.Hub.Typeset(
+                $('#li1_'+num+'_'+j)[0],
+                function(){}
+              );
+              */
             }
           }
         }
