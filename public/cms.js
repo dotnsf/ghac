@@ -112,13 +112,10 @@ $( async function(){
         });
 
         //. #17
-        for( var i = 0; i < result0.issues.length; i ++ ){
-          console.log( 'i=' + i, $('#card-text-'+i).val() );
-          MathJax.Hub.Typeset(
-            $('#card-text-'+i)[0],
-            function(){}
-          );
-        }
+        MathJax.Hub.Typeset(
+          $('#maxjax')[0],    //. 何故かこれで正しく表示される・・・
+          function(){}
+        );
 
         for( var i = 0; i < numbers.length; i ++ ){
           var num = numbers[i];
