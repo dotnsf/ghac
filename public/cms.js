@@ -35,7 +35,7 @@ $( async function(){
             for( var j = 0; j < result0.issues[i].labels.length; j ++ ){
               var color = "white";
               var background_color = result0.issues[i].labels[j].color;
-
+ 
               var dd = 0;
               for( var k = 0; k < 6; k += 2 ){
                 var c = background_color.substr( k, 2 );
@@ -43,7 +43,7 @@ $( async function(){
                 dd += d;
               }
               if( dd > 128 * 3 ){ color = "black"; }
-  
+    
               var label = '&nbsp;<a class="badge badge-pill" style="color: ' + color + '; background-color: #' + background_color + ';" href="' + pathname + '?labels=' + result0.issues[i].labels[j].name + '">' + result0.issues[i].labels[j].name + '</a>';
               labels += label;
             }
@@ -67,7 +67,7 @@ $( async function(){
             + '<td><a href="' + anchor + '">' + state + '</a></td>'
             + '<td><a href="' + anchor + '">' + comments + '</a></td>'
             + '<td><a href="' + anchor + '">' + updated + '</a></td></tr>';
-
+  
           var main = '<div style="margin-top: 50px;">'
             + '<a name="main_' + num + '"/>'
             + '<div id="card_' + num + '" class="card">'
@@ -89,7 +89,7 @@ $( async function(){
             + '<a class="btn btn-secondary" target="_blank" href="https://github.com/' + GITHUB_REPO + '/issues/' + num + '"><i class="fab fa-github"></i></a>'
             + '</div>'
             + '</div>';
-      
+        
           heads += head;
           mains += main;
   
@@ -151,6 +151,9 @@ $( async function(){
 
         //. #16
         mermaid.init();
+      }else{
+        $('#cms_head').css( 'display', 'none' );
+        $('#cms_main').html( '（コンテンツがありません）' );
       }
     }else{
       if( result0 && result0.error && result0.error.message ){
